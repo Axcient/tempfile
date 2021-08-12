@@ -13,6 +13,10 @@ pub fn create_named(_path: &Path, open_options: &mut OpenOptions) -> io::Result<
     not_supported()
 }
 
+pub fn create_named_writeonly(_path: &Path, open_options: &mut OpenOptions) -> io::Result<File> {
+    not_supported()
+}
+
 pub fn create(_dir: &Path) -> io::Result<File> {
     not_supported()
 }

@@ -29,6 +29,15 @@ pub fn create_named(path: &Path, open_options: &mut OpenOptions) -> io::Result<F
         .open(path)
 }
 
+pub fn create_named_writeonly(path: &Path, open_options: &mut OpenOptions) -> io::Result<File> {
+    open_options
+        .create_new(true)
+        .read(false)
+        .write(true)
+        .custom_flags(FILE_ATTRIBUTE_TEMPORARY)
+        .open(path)
+}
+
 pub fn create(dir: &Path) -> io::Result<File> {
     util::create_helper(
         dir,

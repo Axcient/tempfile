@@ -590,6 +590,16 @@ impl NamedTempFile {
         Builder::new().tempfile_in(dir)
     }
 
+    /// Create a new named temporary file in the specified directory.
+    /// Created file has writeonly access
+    ///
+    /// See [`NamedTempFile::new()`] for details.
+    ///
+    /// [`NamedTempFile::new()`]: #method.new
+    pub fn new_writeonly_in<P: AsRef<Path>>(dir: P) -> io::Result<NamedTempFile> {
+        Builder::new().writeonly_tempfile_in(dir)
+    }
+
     /// Get the temporary file's path.
     ///
     /// # Security
@@ -951,6 +961,23 @@ pub(crate) fn create_named(
         path = env::current_dir()?.join(path)
     }
     imp::create_named(&path, open_options)
+        .with_err_path(|| path.clone())
+        .map(|file| NamedTempFile {
+            path: TempPath { path },
+            file,
+        })
+}
+
+pub(crate) fn create_named_writeonly(
+    mut path: PathBuf,
+    open_options: &mut OpenOptions,
+) -> io::Result<NamedTempFile> {
+    // Make the path absolute. Otherwise, changing directories could cause us to
+    // delete the wrong file.
+    if !path.is_absolute() {
+        path = env::current_dir()?.join(path)
+    }
+    imp::create_named_writeonly(&path, open_options)
         .with_err_path(|| path.clone())
         .map(|file| NamedTempFile {
             path: TempPath { path },
