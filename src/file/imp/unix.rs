@@ -51,6 +51,17 @@ pub fn create_named(path: &Path, open_options: &mut OpenOptions) -> io::Result<F
     open_options.open(path)
 }
 
+pub fn create_named_writeonly(path: &Path, open_options: &mut OpenOptions) -> io::Result<File> {
+    open_options.read(false).write(true).create_new(true);
+
+    #[cfg(not(target_os = "wasi"))]
+    {
+        open_options.mode(0o600);
+    }
+
+    open_options.open(path)
+}
+
 fn create_unlinked(path: &Path) -> io::Result<File> {
     let tmp;
     // shadow this to decrease the lifetime. It can't live longer than `tmp`.
