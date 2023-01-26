@@ -25,7 +25,7 @@ fn tmpname(prefix: &OsStr, suffix: &OsStr, rand_len: usize) -> OsString {
         (&mut *rng.get())
             .sample_iter(&Alphanumeric)
             .take(rand_len)
-            .for_each(|b| buf.push(str::from_utf8_unchecked(&[b as u8])))
+            .for_each(|b| buf.push(str::from_utf8_unchecked(&[b])))
     });
     buf.push(suffix);
     buf
